@@ -1,5 +1,5 @@
 import AbstractView from '../framework/view/abstract-view.js';
-import {getFullDate} from '../utils.js';
+import {getFullDate} from '../utils/point.js';
 import { EVENT_TYPES, CITIES } from '../const.js';
 
 const createEditPointTemplate = (data) => {

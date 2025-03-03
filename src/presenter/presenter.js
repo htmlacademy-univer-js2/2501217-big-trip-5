@@ -3,6 +3,8 @@ import SortView from '../view/sort-view.js';
 import EditPointView from '../view/edit-point-view.js';
 import PointListView from '../view/point-list-view.js';
 import PointView from '../view/point-view.js';
+import EmptyPointsListMessageView from '../view/empty-points-list-message-view.js';
+import { generateFilters } from '../mock/filter.js';
 import { render, replace } from '../framework/render.js';
 
 export default class Presenter {
@@ -11,6 +13,7 @@ export default class Presenter {
   #tripEventsContainer = null;
   #pointsModel = null;
   #points = null;
+  #filters = null;
 
   constructor({filtersContainer, tripEventsContainer, pointsModel}) {
     this.#filtersContainer = filtersContainer;
@@ -20,12 +23,17 @@ export default class Presenter {
 
   init() {
     this.#points = this.#pointsModel.points;
+    this.#filters = generateFilters(this.#points);
 
-    render(new FilterView(), this.#filtersContainer);
+    render(new FilterView({filters: this.#filters}), this.#filtersContainer);
     render(new SortView(), this.#tripEventsContainer);
     render(this.#pointsListComponent, this.#tripEventsContainer);
 
-    this.#points.forEach((point) => this.#renderPoint(point));
+    if (this.#points.length > 0) {
+      this.#points.forEach((point) => this.#renderPoint(point));
+    } else {
+      render(new EmptyPointsListMessageView(), this.#pointsListComponent.element);
+    }
   }
 
   #renderPoint(point) {
