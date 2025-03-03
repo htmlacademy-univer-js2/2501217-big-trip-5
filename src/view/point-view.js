@@ -1,4 +1,4 @@
-import {createElement} from '../render.js';
+import AbstractView from '../framework/view/abstract-view.js';
 import {getDateDifference, getTime, getMonthAndDate} from '../utils.js';
 
 const createPointTemplate = (point) => {
@@ -51,24 +51,20 @@ const createPointTemplate = (point) => {
   );
 };
 
-export default class PointView {
-  constructor({point}) {
-    this.point = point;
+export default class PointView extends AbstractView {
+  #point = null;
+
+  constructor({point, onRollButtonClick}) {
+    super();
+    this.#point = point;
+
+    this.element.querySelector('.event__rollup-btn').addEventListener('click', (event) => {
+      event.preventDefault();
+      onRollButtonClick();
+    });
   }
 
-  getTemplate() {
-    return createPointTemplate(this.point);
-  }
-
-  getElement() {
-    if (!this.element) {
-      this.element = createElement(this.getTemplate());
-    }
-
-    return this.element;
-  }
-
-  removeElement() {
-    this.element = null;
+  get template() {
+    return createPointTemplate(this.#point);
   }
 }

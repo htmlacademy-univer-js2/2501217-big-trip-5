@@ -1,12 +1,10 @@
-import {createElement} from '../render.js';
+import AbstractView from '../framework/view/abstract-view.js';
 import {getFullDate} from '../utils.js';
 import { EVENT_TYPES, CITIES } from '../const.js';
 
 const createEditPointTemplate = (data) => {
-  const {eventType, destination, startDatetime, endDatetime, price, offers} = data;
-
-  const fullStartDate = getFullDate(startDatetime);
-  const fullEndDate = getFullDate(endDatetime);
+  const fullStartDate = getFullDate(data.startDatetime);
+  const fullEndDate = getFullDate(data.endDatetime);
 
   return (
     `<li class="trip-events__item">
@@ -15,7 +13,7 @@ const createEditPointTemplate = (data) => {
           <div class="event__type-wrapper">
             <label class="event__type  event__type-btn" for="event-type-toggle-1">
               <span class="visually-hidden">Choose event type</span>
-              <img class="event__type-icon" width="17" height="17" src="img/icons/${eventType.toLowerCase()}.png" alt="Event type icon">
+              <img class="event__type-icon" width="17" height="17" src="img/icons/${data.eventType.toLowerCase()}.png" alt="Event type icon">
             </label>
             <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox">
 
@@ -32,9 +30,9 @@ const createEditPointTemplate = (data) => {
 
           <div class="event__field-group  event__field-group--destination">
             <label class="event__label  event__type-output" for="event-destination-1">
-              ${eventType}
+              ${data.eventType}
             </label>
-            <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${destination.city}" list="destination-list-1">
+            <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${data.destination.city}" list="destination-list-1">
             <datalist id="destination-list-1">
               ${CITIES.map((city) => `<option value="${city}"></option>`).join('')};
             </datalist>
@@ -53,7 +51,7 @@ const createEditPointTemplate = (data) => {
               <span class="visually-hidden">Price</span>
               &euro;
             </label>
-            <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${price}">
+            <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${data.price}">
           </div>
 
           <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
@@ -67,7 +65,7 @@ const createEditPointTemplate = (data) => {
             <h3 class="event__section-title  event__section-title--offers">Offers</h3>
 
             <div class="event__available-offers">
-              ${offers.map((offer) => `<div class="event__offer-selector">
+              ${data.offers.map((offer) => `<div class="event__offer-selector">
                 <input class="event__offer-checkbox  visually-hidden" id="event-offer-${offer.title.toLowerCase()}-1" type="checkbox" name="event-offer-${offer.title.toLowerCase()}" checked>
                 <label class="event__offer-label" for="event-offer-${offer.title.toLowerCase()}-1">
                   <span class="event__offer-title">${offer.title}</span>
@@ -80,7 +78,7 @@ const createEditPointTemplate = (data) => {
 
           <section class="event__section  event__section--destination">
             <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-            <p class="event__destination-description">${destination.description}</p>
+            <p class="event__destination-description">${data.destination.description}</p>
           </section>
         </section>
       </form>
@@ -88,24 +86,21 @@ const createEditPointTemplate = (data) => {
   );
 };
 
-export default class EditPointView {
-  constructor({point}) {
-    this.point = point;
+export default class extends AbstractView {
+  #point = null;
+
+  constructor({point, onRollButtonClick, onSubmitClick}) {
+    super();
+    this.#point = point;
+
+    this.element.querySelector('.event__rollup-btn').addEventListener('click', (event) => {
+      event.preventDefault();
+      onRollButtonClick();
+    });
+    this.element.querySelector('.event__save-btn').addEventListener('submit', onSubmitClick);
   }
 
-  getTemplate() {
-    return createEditPointTemplate(this.point);
-  }
-
-  getElement() {
-    if (!this.element) {
-      this.element = createElement(this.getTemplate());
-    }
-
-    return this.element;
-  }
-
-  removeElement() {
-    this.element = null;
+  get template() {
+    return createEditPointTemplate(this.#point);
   }
 }

@@ -3,5 +3,5 @@ import PointsModel from './model/points-model.js';
 
 const filtersContainerElement = document.querySelector('.trip-controls__filters');
 const tripEventsContainerElement = document.querySelector('.trip-events');
-const pointsModel = new PointsModel();
-new Presenter({filtersContainer: filtersContainerElement, tripEventsContainer: tripEventsContainerElement, pointsModel}).init();
+new Presenter({filtersContainer: filtersContainerElement, tripEventsContainer: tripEventsContainerElement,
+  pointsModel: new PointsModel()}).init();
