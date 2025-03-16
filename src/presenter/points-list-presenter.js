@@ -1,19 +1,29 @@
 import FilterView from '../view/filter-view.js';
 import SortView from '../view/sort-view.js';
-import EditPointView from '../view/edit-point-view.js';
 import PointListView from '../view/point-list-view.js';
-import PointView from '../view/point-view.js';
+import PointPresenter from './point-presenter.js';
 import EmptyPointsListMessageView from '../view/empty-points-list-message-view.js';
 import { generateFilters } from '../mock/filter.js';
-import { render, replace } from '../framework/render.js';
+import { render } from '../framework/render.js';
+import { updatePoint } from '../utils/point.js';
 
-export default class Presenter {
+export default class PointsListPresenter {
   #pointsListComponent = new PointListView();
   #filtersContainer = null;
   #tripEventsContainer = null;
   #pointsModel = null;
   #points = null;
   #filters = null;
+  #pointPresenters = new Map();
+
+  #onModeChange = () => {
+    this.#pointPresenters.forEach((presenter) => presenter.resetView());
+  };
+
+  #onFavoriteBtnClick = (updatedPoint) => {
+    this.#points = updatePoint(this.#points, updatedPoint);
+    this.#pointPresenters.get(updatedPoint.id).init(updatedPoint);
+  };
 
   constructor({filtersContainer, tripEventsContainer, pointsModel}) {
     this.#filtersContainer = filtersContainer;
@@ -37,40 +47,12 @@ export default class Presenter {
   }
 
   #renderPoint(point) {
-    const onEscKeydown = (event) => {
-      if (event.key === 'Escape') {
-        event.preventDefault();
-        replaceEditFormToPoint();
-        document.removeEventListener('keydown', onEscKeydown);
-      }
-    };
-
-    const editForm = new EditPointView({point,
-      onSubmitClick: () => {
-        replaceEditFormToPoint();
-        document.removeEventListener('keydown', onEscKeydown);
-      },
-      onRollButtonClick: () => {
-        replaceEditFormToPoint();
-        document.removeEventListener('keydown', onEscKeydown);
-      }
+    const pointPresenter = new PointPresenter({
+      pointsListComponent: this.#pointsListComponent,
+      changeDataOnFavorite: this.#onFavoriteBtnClick,
+      changeMode: this.#onModeChange
     });
-
-    const pointItem = new PointView({point,
-      onRollButtonClick: () => {
-        replacePointToEditForm();
-        document.addEventListener('keydown', onEscKeydown);
-      }
-    });
-
-    function replacePointToEditForm() {
-      replace(editForm, pointItem);
-    }
-
-    function replaceEditFormToPoint() {
-      replace(pointItem, editForm);
-    }
-
-    render(pointItem, this.#pointsListComponent.element);
+    pointPresenter.init(point);
+    this.#pointPresenters.set(point.id, pointPresenter);
   }
 }

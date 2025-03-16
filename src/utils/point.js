@@ -37,6 +37,8 @@ const getDateDifference = (date1, date2) => {
   }
 };
 
+const updatePoint = (points, updatedPoint) => points.map((point) => point.id === updatedPoint.id ? updatedPoint : point);
+
 const getTime = (date) => dayjs(date).format('HH:mm');
 
 const getMonthAndDate = (date) => dayjs(date).format('MMM DD');
@@ -49,4 +51,4 @@ const isPresentEvent = (dateFrom, dateTo) => dayjs(dateFrom).isBefore(dayjs()) &
 
 const isFutureEvent = (date) => dayjs(date).isAfter(dayjs());
 
-export {getTwoRandomDates, getDateDifference, getTime, getMonthAndDate, getFullDate, isPastEvent, isPresentEvent, isFutureEvent};
+export {getTwoRandomDates, getDateDifference, getTime, getMonthAndDate, getFullDate, isPastEvent, isPresentEvent, isFutureEvent, updatePoint};
