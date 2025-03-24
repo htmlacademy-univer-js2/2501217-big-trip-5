@@ -13,5 +13,11 @@ const DESCRIPTIONS = [
   'In rutrum ac purus sit amet tempus.',
 ];
 const OFFERS = ['Upgrade to a business class', 'Order Uber', 'Add luggage', 'Switch to comfort', 'Rent a car', 'Add breakfast'];
+const FILTER_TYPES = {
+  EVERYTHING: 'everything',
+  FUTURE: 'future',
+  PRESENT: 'present',
+  PAST: 'past'
+};
 
-export {EVENT_TYPES, CITIES, DESCRIPTIONS, OFFERS};
+export {EVENT_TYPES, CITIES, DESCRIPTIONS, OFFERS, FILTER_TYPES};

@@ -1,22 +1,14 @@
 import dayjs from 'dayjs';
 
-const getRandomArrayElement = (items) => items[Math.floor(Math.random() * items.length)];
-
-const getRandomInteger = (min, max) => {
-  const lower = Math.ceil(Math.min(min, max));
-  const upper = Math.floor(Math.max(min, max));
-  return Math.floor(Math.random() * (upper - lower + 1) + lower);
-};
-
 const getTwoRandomDates = () => {
   const startDate = new Date();
-  startDate.setDate(startDate.getDate() - Math.floor(Math.random() * 365));
+  startDate.setDate(startDate.getDate() + Math.floor(Math.random() * 10 * (Math.random() < 0.5 ? -1 : 1)));
 
   startDate.setHours(Math.floor(Math.random() * 24));
   startDate.setMinutes(Math.floor(Math.random() * 60));
   startDate.setSeconds(0);
 
-  const daysDifference = Math.floor(Math.random() * 4);
+  const daysDifference = Math.floor(Math.random() * 10);
   const endDate = new Date(startDate);
   endDate.setDate(startDate.getDate() + daysDifference);
 
@@ -51,4 +43,10 @@ const getMonthAndDate = (date) => dayjs(date).format('MMM DD');
 
 const getFullDate = (date) => dayjs(date).format('DD/MM/YY HH:mm');
 
-export {getRandomArrayElement, getRandomInteger, getTwoRandomDates, getDateDifference, getTime, getMonthAndDate, getFullDate};
+const isPastEvent = (date) => dayjs(date).isBefore(dayjs());
+
+const isPresentEvent = (dateFrom, dateTo) => dayjs(dateFrom).isBefore(dayjs()) && dayjs(dateTo).isAfter(dayjs());
+
+const isFutureEvent = (date) => dayjs(date).isAfter(dayjs());
+
+export {getTwoRandomDates, getDateDifference, getTime, getMonthAndDate, getFullDate, isPastEvent, isPresentEvent, isFutureEvent};
