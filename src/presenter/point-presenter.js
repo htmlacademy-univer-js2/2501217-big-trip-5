@@ -1,11 +1,7 @@
 import PointView from '../view/point-view.js';
 import { render, replace, remove } from '../framework/render.js';
 import EditPointView from '../view/edit-point-view.js';
-
-const Mode = {
-  DEFAULT: 'DEFAULT',
-  EDITING: 'EDITING',
-};
+import { MODE } from '../const.js';
 
 export default class PointPresenter {
   #point = null;
@@ -14,7 +10,7 @@ export default class PointPresenter {
   #pointsListComponent = null;
   #onFavouriteBtnClick = null;
   #onModeChange = null;
-  #mode = Mode.DEFAULT;
+  #mode = MODE.DEFAULT;
 
   #onEscKeydown = (event) => {
     if (event.key === 'Escape') {
@@ -58,11 +54,11 @@ export default class PointPresenter {
       return;
     }
 
-    if (this.#mode === Mode.DEFAULT) {
+    if (this.#mode === MODE.DEFAULT) {
       replace(this.#pointItem, prevPointComponent);
     }
 
-    if (this.#mode === Mode.EDITING) {
+    if (this.#mode === MODE.EDITING) {
       replace(this.#editFormItem, prevEditFormComponent);
     }
 
@@ -70,8 +66,12 @@ export default class PointPresenter {
     remove(prevEditFormComponent);
   }
 
+  destroy() {
+    remove([this.#pointItem, this.#editFormItem]);
+  }
+
   resetView() {
-    if(this.#mode !== Mode.DEFAULT) {
+    if(this.#mode !== MODE.DEFAULT) {
       this.#replaceEditFormToPoint();
     }
   }
@@ -80,13 +80,13 @@ export default class PointPresenter {
     replace(this.#editFormItem, this.#pointItem);
     document.addEventListener('keydown', this.#onEscKeydown);
     this.#onModeChange();
-    this.#mode = Mode.EDITING;
+    this.#mode = MODE.EDITING;
   }
 
   #replaceEditFormToPoint() {
     replace(this.#pointItem, this.#editFormItem);
     document.removeEventListener('keydown', this.#onEscKeydown);
-    this.#mode = Mode.DEFAULT;
+    this.#mode = MODE.DEFAULT;
   }
 
   #addToFaivorite() {
