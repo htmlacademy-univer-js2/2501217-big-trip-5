@@ -55,5 +55,11 @@ const sortByTime = (pointA, pointB) => dayjs(pointB.endDatetime).diff(pointB.sta
 
 const sortByPrice = (pointA, pointB) => pointB.price - pointA.price;
 
+const getOffersByType = (type, offers) => offers.find((offer) => offer.type === type)?.offers;
 
-export {getTwoRandomDates, getDateDifference, getTime, getMonthAndDate, getFullDate, isPastEvent, isPresentEvent, isFutureEvent, sortByDay, sortByTime, sortByPrice};
+const getOfferById = (id, offers) => offers.find((offer) => offer.id === id);
+
+const getDestinationByCity = (city, destinations) => destinations.find((destination) => destination.city === city);
+
+export {getTwoRandomDates, getDateDifference, getTime, getMonthAndDate, getFullDate, isPastEvent, isPresentEvent, isFutureEvent, sortByDay, sortByTime,
+  sortByPrice, getOffersByType, getOfferById, getDestinationByCity};

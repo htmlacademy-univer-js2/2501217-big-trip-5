@@ -6,10 +6,18 @@ const MAX_DESCRIPTIONS_COUNT = 5;
 const MIN_PICTURES_COUNT = 1;
 const MAX_PICTURES_COUNT = 5;
 
-const getRandomDestination = () => ({
+const getDestinationByCity = (city) => ({
+  id: crypto.randomUUID(),
   description: Array.from({length: getRandomInteger(MIN_DESCRIPTIONS_COUNT, MAX_DESCRIPTIONS_COUNT)}, () => getRandomArrayElement(DESCRIPTIONS)).join(' '),
-  city: getRandomArrayElement(CITIES),
-  pictures: Array.from({length: getRandomInteger(MIN_PICTURES_COUNT, MAX_PICTURES_COUNT)}, () => `https://loremflickr.com/248/152?random=${getRandomInteger(1, 1000)}`),
+  city: city,
+  pictures: Array.from({length: getRandomInteger(MIN_PICTURES_COUNT, MAX_PICTURES_COUNT)}, () => ({
+    src: `https://loremflickr.com/248/152?random=${getRandomInteger(1, 1000)}`,
+    alt: `Picture of the ${city}`,
+  })),
 });
 
-export {getRandomDestination};
+const DESTINATIONS = CITIES.map(getDestinationByCity);
+
+const getRandomDestination = () => getRandomArrayElement(DESTINATIONS).city;
+
+export {getRandomDestination, DESTINATIONS};
