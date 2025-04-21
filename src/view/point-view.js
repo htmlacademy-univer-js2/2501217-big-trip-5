@@ -1,7 +1,17 @@
 import AbstractView from '../framework/view/abstract-view.js';
-import {getDateDifference, getTime, getMonthAndDate} from '../utils/point.js';
+import {getDateDifference, getTime, getMonthAndDate, getOfferById, getOffersByType, getDestinationByCity} from '../utils/point.js';
 
-const createPointTemplate = (point) => {
+function createOfferTemplate(offerId, offers) {
+  const {title, price} = getOfferById(offerId, offers);
+
+  return `<li class="event__offer">
+            <span class="event__offer-title">${title}</span>
+            &plus;&euro;&nbsp;
+            <span class="event__offer-price">${price}</span>
+          </li>`;
+}
+
+const createPointTemplate = (point, destinations, allOffers) => {
   const {eventType, destination, startDatetime, endDatetime, price, offers, isFavorite} = point;
 
   const startDate = getMonthAndDate(startDatetime);
@@ -9,6 +19,8 @@ const createPointTemplate = (point) => {
   const startTime = getTime(startDatetime);
   const endTime = getTime(endDatetime);
   const duration = getDateDifference(startDatetime, endDatetime);
+  const availableOffers = getOffersByType(eventType, allOffers);
+  const pointDestination = getDestinationByCity(destination, destinations);
 
   return (
     `<li class="trip-events__item">
@@ -17,7 +29,7 @@ const createPointTemplate = (point) => {
         <div class="event__type">
           <img class="event__type-icon" width="42" height="42" src="img/icons/${eventType.toLowerCase()}.png" alt="Event type icon">
         </div>
-        <h3 class="event__title">${eventType} ${destination.city}</h3>
+        <h3 class="event__title">${eventType} ${pointDestination.city}</h3>
         <div class="event__schedule">
           <p class="event__time">
             <time class="event__start-time" datetime="${startDatetime}">${startTime} ${startDate === endDate ? '' : startDate}</time>
@@ -31,11 +43,7 @@ const createPointTemplate = (point) => {
         </p>
         <h4 class="visually-hidden">Offers:</h4>
         <ul class="event__selected-offers">
-          ${offers.map((offer) => `<li class="event__offer">
-            <span class="event__offer-title">${offer.title}</span>
-            &plus;&euro;&nbsp;
-            <span class="event__offer-price">${offer.price}</span>
-          </li>`).join('')}
+           ${offers.map((offerId) => createOfferTemplate(offerId, availableOffers)).join('')}
         </ul>
         <button class="event__favorite-btn  ${isFavorite ? 'event__favorite-btn--active' : ''}" type="button">
           <span class="visually-hidden">Add to favorite</span>
@@ -53,10 +61,14 @@ const createPointTemplate = (point) => {
 
 export default class PointView extends AbstractView {
   #point = null;
+  #destinations = null;
+  #offers = null;
 
-  constructor({point, onRollButtonClick, onFavoriteClick}) {
+  constructor({point, destinations, offers, onRollButtonClick, onFavoriteClick}) {
     super();
     this.#point = point;
+    this.#destinations = destinations;
+    this.#offers = offers;
 
     this.element.querySelector('.event__rollup-btn').addEventListener('click', (event) => {
       event.preventDefault();
@@ -70,6 +82,6 @@ export default class PointView extends AbstractView {
   }
 
   get template() {
-    return createPointTemplate(this.#point);
+    return createPointTemplate(this.#point, this.#destinations, this.#offers);
   }
 }
