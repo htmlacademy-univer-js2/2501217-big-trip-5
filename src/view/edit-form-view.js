@@ -10,7 +10,8 @@ const FLATPICKR_CONFIG = {
   locale: {
     firstDayOfWeek: 1,
   },
-  'time_24hr': true,
+  // eslint-disable-next-line camelcase
+  time_24hr: true,
 };
 
 function createOfferTemplate(offer, pointOffers) {
@@ -194,7 +195,7 @@ export default class EditFormView extends AbstractStatefulView {
     });
   };
 
-  #onDateStartCloseButton = ([date]) => {
+  #onDateStartCloseButtonClick = ([date]) => {
     this._setState({
       point: {
         ...this._state.point,
@@ -204,7 +205,7 @@ export default class EditFormView extends AbstractStatefulView {
     this.#datepickerEnd.set('minDate', this._state.point.startDatetime);
   };
 
-  #onDateEndCloseButton = ([date]) => {
+  #onDateEndCloseButtonClick = ([date]) => {
     this._setState({
       point: {
         ...this._state.point,
@@ -220,14 +221,14 @@ export default class EditFormView extends AbstractStatefulView {
     this.#datepickerStart = flatpickr(dateStartElement, {
       ...FLATPICKR_CONFIG,
       defaultDate: this._state.point.startDatetime,
-      onClose: this.#onDateStartCloseButton,
+      onClose: this.#onDateStartCloseButtonClick,
       maxDate: this._state.point.endDatetime,
     });
 
     this.#datepickerEnd = flatpickr(dateEndElement, {
       ...FLATPICKR_CONFIG,
       defaultDate: this._state.point.endDatetime,
-      onClose: this.#onDateEndCloseButton,
+      onClose: this.#onDateEndCloseButtonClick,
       minDate: this._state.point.startDatetime,
     });
   };
@@ -235,13 +236,22 @@ export default class EditFormView extends AbstractStatefulView {
   removeElement = () => {
     super.removeElement();
 
-    if(this.#datepickerStart) {
-      this.#datepickerStart.destroy();
-      this.#datepickerStart = null;
-    }
-    if(this.#datepickerEnd) {
-      this.#datepickerEnd.destroy();
-      this.#datepickerEnd = null;
+    this.#removeSubElement(this.#datepickerStart);
+    this.#removeSubElement(this.#datepickerEnd);
+    // if(this.#datepickerStart) {
+    //   this.#datepickerStart.destroy();
+    //   this.#datepickerStart = null;
+    // }
+    // if(this.#datepickerEnd) {
+    //   this.#datepickerEnd.destroy();
+    //   this.#datepickerEnd = null;
+    // }
+  };
+
+  #removeSubElement = (element) => {
+    if(element) {
+      element.destroy();
+      element = null;
     }
   };
 
