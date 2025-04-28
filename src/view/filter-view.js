@@ -1,24 +1,41 @@
 import AbstractView from '../framework/view/abstract-view.js';
 
-const DEFAULT_FILTER = 'everything';
+function createFilterTemplate(filter, currentFilter) {
+  const checked = currentFilter === filter.id;
 
-const createFilterTemplate = (filters) => `<form class="trip-filters" action="#" method="get">
-    ${filters.map((filter) =>`<div class="trip-filters__filter">
-      <input id="filter-${filter.name}" class="trip-filters__filter-input visually-hidden" type="radio" name="trip-filter" value="${filter.name}"
-      ${filter.count === 0 ? 'disabled' : ''} ${filter.name === DEFAULT_FILTER ? 'checked' : ''}>
-      <label class="trip-filters__filter-label" for="filter-${filter.name}">${filter.name}</label>
-    </div>`).join('')}
-  </form>`;
+  return `<div class="trip-filters__filter">
+    <input id="${`filter-${filter.id.toLowerCase()}`}" class="trip-filters__filter-input  visually-hidden" type="radio" name="trip-filter" value="${filter.id}" ${checked ? 'checked' : ''}>
+    <label class="trip-filters__filter-label" for="${`filter-${filter.id.toLowerCase()}`}">${filter.name}</label>
+  </div>`;
+}
 
-export default class FilterView extends AbstractView {
+function createAllFiltersTemplate(allFilters, currentFilter) {
+  return `<form class="trip-filters" action="#" method="get">
+    ${allFilters.map((f) => createFilterTemplate(f, currentFilter)).join('')}
+      <button class="visually-hidden" type="submit">Accept filter</button>
+    </form>`;
+}
+
+export class FilterView extends AbstractView {
   #filters = null;
+  #currentFilter = null;
+  #filterTypeChange = null;
 
-  constructor({filters}) {
+  #onFilterChange = (event) => {
+    event.preventDefault();
+    this.#filterTypeChange(event.target.value);
+  };
+
+  constructor({filters, currentFilter, onFilterTypeChange}) {
     super();
     this.#filters = filters;
+    this.#currentFilter = currentFilter;
+    this.#filterTypeChange = onFilterTypeChange;
+
+    this.element.addEventListener('change', this.#onFilterChange);
   }
 
   get template() {
-    return createFilterTemplate(this.#filters);
+    return createAllFiltersTemplate(this.#filters, this.#currentFilter);
   }
 }
