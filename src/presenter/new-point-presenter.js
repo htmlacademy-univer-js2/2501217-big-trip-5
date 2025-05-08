@@ -5,13 +5,13 @@ import EditFormView from '../view/edit-form-view.js';
 export default class NewPointPresenter {
   #container = null;
   #pointNewComponent = null;
-  #pointsModel = null;
+  #pointsListModel = null;
   #onDataChange = null;
   #onDestroy = null;
 
-  constructor({container, pointsModel, onDataChange, onDestroy}) {
+  constructor({container, pointsListModel, onDataChange, onDestroy}) {
     this.#container = container;
-    this.#pointsModel = pointsModel;
+    this.#pointsListModel = pointsListModel;
     this.#onDataChange = onDataChange;
     this.#onDestroy = onDestroy;
   }
@@ -22,8 +22,8 @@ export default class NewPointPresenter {
     }
 
     this.#pointNewComponent = new EditFormView({
-      destinations: this.#pointsModel.destinations,
-      offers: this.#pointsModel.offers,
+      destinations: this.#pointsListModel.destinations,
+      offers: this.#pointsListModel.offers,
       onRollButtonClick: this.#onResetClick,
       onSubmitButtonClick: this.#onSubmitButtonClick,
       onResetClick: this.#onResetClick,

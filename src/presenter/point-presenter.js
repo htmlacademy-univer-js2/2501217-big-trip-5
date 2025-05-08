@@ -51,14 +51,14 @@ export default class PointPresenter {
         this.#editFormItem.reset(this.#point);
         this.#replaceEditFormToPoint();
       },
-      onSubmitButtonClick: (value) => {
-        const isMinor = !isSameDate(value.startDatetime, this.#point.startDatetime) ||
-        !isSameDate(value.endDatetime, this.#point.endDatetime);
-        this.#updateData(ACTIONS.UPDATE_POINT, isMinor ? UPDATE_TYPES.MINOR : UPDATE_TYPES.PATCH, value);
+      onSubmitButtonClick: async (value) => {
+        const isMinor = !isSameDate(value.dateFrom, this.#point.dateFrom) ||
+        !isSameDate(value.dateTo, this.#point.dateTo);
+        await this.#updateData(ACTIONS.UPDATE_POINT, isMinor ? UPDATE_TYPES.MINOR : UPDATE_TYPES.PATCH, value);
         this.#replaceEditFormToPoint();
       },
-      onDeleteClick: (value) => {
-        this.#updateData(ACTIONS.DELETE_POINT, UPDATE_TYPES.MINOR, value);
+      onDeleteClick: async (value) => {
+        await this.#updateData(ACTIONS.DELETE_POINT, UPDATE_TYPES.MINOR, value);
       },
     });
 
