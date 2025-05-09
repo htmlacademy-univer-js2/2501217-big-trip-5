@@ -34,6 +34,7 @@ const ACTIONS = {
 const UPDATE_TYPES = {
   PATCH: 'PATCH',
   MINOR: 'MINOR',
+  MAJOR: 'MAJOR',
   INIT: 'INIT',
 };
 
@@ -55,6 +56,13 @@ const FORM_TYPE = {
 const METHOD = {
   GET: 'GET',
   PUT: 'PUT',
+  POST: 'POST',
+  DELETE: 'DELETE',
+};
+
+const TIME_LIMIT = {
+  LOWER_LIMIT: 200,
+  UPPER_LIMIT: 500,
 };
 
 const AUTHORIZATION = 'Basic v2a14a3i8a7t0rr';
@@ -73,5 +81,6 @@ export {
   FORM_TYPE,
   METHOD,
   AUTHORIZATION,
-  END_POINT
+  END_POINT,
+  TIME_LIMIT
 };

@@ -39,20 +39,38 @@ export default class NewPointPresenter {
       return;
     }
 
+    this.#onDestroy({isCanceled});
+
     remove(this.#pointNewComponent);
     this.#pointNewComponent = null;
     document.removeEventListener('keydown', this.#onEscKeydown);
-
-    this.#onDestroy({isCanceled});
   };
+
+  setSaving() {
+    this.#pointNewComponent.updateElement({
+      isDisabled: true,
+      isSaving: true,
+    });
+  }
+
+  setAborting() {
+    const resetFormState = () => {
+      this.#pointNewComponent.updateElement({
+        isDisabled: false,
+        isSaving: false,
+        isDeleting: false,
+      });
+    };
+
+    this.#pointNewComponent.shake(resetFormState);
+  }
 
   #onSubmitButtonClick = (point) => {
     this.#onDataChange(
       ACTIONS.ADD_POINT,
       UPDATE_TYPES.MINOR,
-      point
+      point,
     );
-    this.destroy({isCanceled: false});
   };
 
   #onResetClick = () => {
