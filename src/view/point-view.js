@@ -1,5 +1,5 @@
 import AbstractView from '../framework/view/abstract-view.js';
-import {getDateDifference, getTime, getMonthAndDate, getOfferById, getOffersByType, getDestinationById} from '../utils/point.js';
+import {getDateDifference, getTime, getMonthAndDay, getOfferById, getOffersByType, getDestinationById} from '../utils/point.js';
 
 function createOfferTemplate(offerId, offers) {
   const {title, price} = getOfferById(offerId, offers) || {};
@@ -14,8 +14,7 @@ function createOfferTemplate(offerId, offers) {
 const createPointTemplate = (point, destinations, allOffers) => {
   const {type, destination, dateFrom, dateTo, basePrice, offers, isFavorite} = point;
 
-  const startDate = getMonthAndDate(dateFrom);
-  const endDate = getMonthAndDate(dateTo);
+  const startDate = getMonthAndDay(dateFrom);
   const startTime = getTime(dateFrom);
   const endTime = getTime(dateTo);
   const duration = getDateDifference(dateFrom, dateTo);
@@ -32,9 +31,9 @@ const createPointTemplate = (point, destinations, allOffers) => {
         <h3 class="event__title">${type} ${pointDestination.name}</h3>
         <div class="event__schedule">
           <p class="event__time">
-            <time class="event__start-time" datetime="${dateFrom}">${startTime} ${startDate === endDate ? '' : startDate}</time>
+            <time class="event__start-time" datetime="${dateFrom}">${startTime}</time>
             &mdash;
-            <time class="event__end-time" datetime="${dateTo}">${endTime} ${startDate === endDate ? '' : endDate}</time>
+            <time class="event__end-time" datetime="${dateTo}">${endTime}</time>
           </p>
           <p class="event__duration">${duration}</p>
         </div>
@@ -78,6 +77,7 @@ export default class PointView extends AbstractView {
     this.element.querySelector('.event__favorite-btn').addEventListener('click', (event) => {
       event.preventDefault();
       onFavoriteClick();
+      event.currentTarget.blur();
     });
   }
 

@@ -1,5 +1,6 @@
 import { FilterView } from '../view/filter-view.js';
 import { FILTER_TYPES, UPDATE_TYPES } from '../const.js';
+import { pointsFilters } from '../utils/filter.js';
 import { render, replace } from '../framework/render';
 
 export default class FilterPresenter {
@@ -29,10 +30,15 @@ export default class FilterPresenter {
   }
 
   get filters() {
-    return Object.values(FILTER_TYPES).map((type) => ({
-      id: type,
-      name: type,
-    }));
+    const allPoints = this.#pointsModel.points;
+    return Object.values(FILTER_TYPES).map((type) => {
+      const count = pointsFilters[type](allPoints).length;
+      return {
+        id: type,
+        name: type,
+        disabled: count === 0
+      };
+    });
   }
 
   init() {

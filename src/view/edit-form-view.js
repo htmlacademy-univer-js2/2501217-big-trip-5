@@ -1,18 +1,8 @@
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import {getFullDate, getOffersByType, getDestinationById} from '../utils/point.js';
-import { EVENT_TYPES, EMPTY_POINT, FORM_TYPE } from '../const.js';
+import { EVENT_TYPES, EMPTY_POINT, FORM_TYPE, FLATPICKR_CONFIG } from '../const.js';
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
-
-const FLATPICKR_CONFIG = {
-  dateFormat: 'd/m/y H:i',
-  enableTime: true,
-  locale: {
-    firstDayOfWeek: 1,
-  },
-  // eslint-disable-next-line camelcase
-  time_24hr: true,
-};
 
 function createOfferTemplate(offer, pointOffers, isDisabled) {
   const {id, title, price} = offer;
@@ -32,7 +22,7 @@ const createEditFormTemplate = (state, destinations, allOffers, formType) => {
   const {id, type, destination, dateFrom, dateTo, basePrice, offers, isDisabled, isSaving, isDeleting} = state;
   const availableOffers = getOffersByType(type, allOffers);
   const pointDestination = getDestinationById(destination, destinations) || '';
-  const isDestinationValid = pointDestination !== undefined && pointDestination.name !== undefined && pointDestination.pictures !== undefined && pointDestination.description !== undefined;
+  const isDestinationValid = pointDestination !== '' && pointDestination.pictures.length !== 0 && pointDestination.description !== '';
   const DeleteBtnText = isDeleting ? 'Deleting...' : 'Delete';
 
   return (
@@ -61,7 +51,7 @@ const createEditFormTemplate = (state, destinations, allOffers, formType) => {
             <label class="event__label  event__type-output" for="event-destination-${id}">
               ${type}
             </label>
-            <input class="event__input  event__input--destination" id="event-destination-${id}" type="text" name="event-destination" value="${isDestinationValid ? pointDestination.name : ''}" list="destination-list-${id}" required ${isDisabled ? 'disabled' : ''}>
+            <input class="event__input  event__input--destination" id="event-destination-${id}" type="text" name="event-destination" value="${pointDestination !== '' ? pointDestination.name : ''}" list="destination-list-${id}" required ${isDisabled ? 'disabled' : ''}>
             <datalist id="destination-list-${id}">
               ${destinations.map((dest) => `<option value="${dest.id}">${dest.name}</option>`).join('')};
             </datalist>
@@ -91,8 +81,8 @@ const createEditFormTemplate = (state, destinations, allOffers, formType) => {
             <span class="visually-hidden">Open event</span>
           </button>` : ''}
         </header>
-        <section class="event__details">
-          ${(availableOffers.length !== 0) ? `<section class="event__section  event__section--offers">
+        ${availableOffers.length !== 0 || isDestinationValid ? `<section class="event__details">
+          ${availableOffers.length !== 0 ? `<section class="event__section  event__section--offers">
             <h3 class="event__section-title  event__section-title--offers">Offers</h3>
             <div class="event__available-offers">
               ${availableOffers.map((option) => createOfferTemplate(option, offers, isDisabled)).join('')}
@@ -108,7 +98,7 @@ const createEditFormTemplate = (state, destinations, allOffers, formType) => {
               </div>
             </div>
           </section>` : ''}
-        </section>
+        </section>` : ''}
       </form>
     </li>`
   );

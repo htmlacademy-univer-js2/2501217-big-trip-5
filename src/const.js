@@ -65,9 +65,21 @@ const TIME_LIMIT = {
   UPPER_LIMIT: 500,
 };
 
+const FLATPICKR_CONFIG = {
+  dateFormat: 'd/m/y H:i',
+  enableTime: true,
+  locale: {
+    firstDayOfWeek: 1,
+  },
+  // eslint-disable-next-line camelcase
+  time_24hr: true,
+};
+
 const AUTHORIZATION = 'Basic v2a14a3i8a7t0rr';
 
 const END_POINT = 'https://21.objects.htmlacademy.pro/big-trip';
+
+const CITIES_LENGTH_BORDER = 3;
 
 export {
   EVENT_TYPES,
@@ -82,5 +94,7 @@ export {
   METHOD,
   AUTHORIZATION,
   END_POINT,
-  TIME_LIMIT
+  TIME_LIMIT,
+  CITIES_LENGTH_BORDER,
+  FLATPICKR_CONFIG,
 };

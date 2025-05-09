@@ -59,6 +59,7 @@ export default class PointsListModel extends Observable {
   }
 
   async init() {
+    let isError = false;
     try {
       const points = await this.#pointsApiService.points;
       this.#points = points.map(adaptToClient);
@@ -68,7 +69,8 @@ export default class PointsListModel extends Observable {
       this.#points = [];
       this.#offers = [];
       this.#destinations = [];
+      isError = true;
     }
-    this._notify(UPDATE_TYPES.INIT, null);
+    this._notify(UPDATE_TYPES.INIT, { isError });
   }
 }
