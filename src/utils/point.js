@@ -1,5 +1,7 @@
 import dayjs from 'dayjs';
 
+const updateItem = (items, update) => items.map((item) => item.id === update.id ? update : item);
+
 const getTwoRandomDates = () => {
   const startDate = new Date();
   startDate.setDate(startDate.getDate() + Math.floor(Math.random() * 10 * (Math.random() < 0.5 ? -1 : 1)));
@@ -64,6 +66,7 @@ const getOfferById = (id, offers) => offers?.find((offer) => offer.id === id);
 const getDestinationById = (id, destinations) => destinations.find((destination) => destination.id === id);
 
 export {
+  updateItem,
   getTwoRandomDates,
   getDateDifference,
   getTime,
@@ -78,5 +81,5 @@ export {
   sortByPrice,
   getOffersByType,
   getOfferById,
-  getDestinationById
+  getDestinationById,
 };

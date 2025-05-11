@@ -12,7 +12,7 @@ export default class FilterPresenter {
     if(this.#filterModel.filter === filterType) {
       return;
     }
-    this.#filterModel.setFilter(UPDATE_TYPES.MINOR, filterType);
+    this.#filterModel.setFilter(UPDATE_TYPES.MAJOR, filterType);
   };
 
   #onPointsModelChange = () => {
