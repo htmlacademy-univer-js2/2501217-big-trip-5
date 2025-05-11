@@ -1,34 +1,27 @@
 import TripInfoView from '../view/trip-info-view.js';
-import { render, replace } from '../framework/render.js';
-import { RenderPosition } from '../framework/render.js';
+import { render, replace, RenderPosition } from '../framework/render.js';
 
 export default class TripInfoPresenter {
-  #container = null;
-  #pointsListModel = null;
-  #tripInfoComponent = null;
+  #containerElement;
+  #pointsListModel;
+  #component;
 
-  constructor({ container, pointsListModel }) {
-    this.#container = container;
+  constructor({ containerElement, pointsListModel }) {
+    this.#containerElement = containerElement;
     this.#pointsListModel = pointsListModel;
-    this.#pointsListModel.addObserver(this.#onPointListModelChange);
+    this.#pointsListModel.addObserver(this.#modelChangeHandler);
   }
 
   init() {
-    this.#renderTripInfo();
-  }
+    const previousComponent = this.#component;
+    this.#component = new TripInfoView(this.#pointsListModel.points, this.#pointsListModel.destinations, this.#pointsListModel.offers);
 
-  #onPointListModelChange = () => {
-    this.#renderTripInfo();
-  };
-
-  #renderTripInfo() {
-    const prevComponent = this.#tripInfoComponent;
-    this.#tripInfoComponent = new TripInfoView(this.#pointsListModel.points, this.#pointsListModel.destinations, this.#pointsListModel.offers);
-
-    if (prevComponent === null) {
-      render(this.#tripInfoComponent, this.#container, RenderPosition.AFTERBEGIN);
+    if (!previousComponent) {
+      render(this.#component, this.#containerElement, RenderPosition.AFTERBEGIN);
     } else {
-      replace(this.#tripInfoComponent, prevComponent);
+      replace(this.#component, previousComponent);
     }
   }
+
+  #modelChangeHandler = () => this.init();
 }
