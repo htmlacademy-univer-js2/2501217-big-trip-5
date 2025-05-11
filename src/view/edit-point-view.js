@@ -1,5 +1,5 @@
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
-import { getFullDate, getOffersByType, getDestinationById } from '../utils/point.js';
+import { getFullDate, getOffersByType, getDestinationById, getDestinationByName } from '../utils/point.js';
 import { EVENTS_TYPES, EMPTY_POINT, FormType, FLATPICKR_CONFIG } from '../consts.js';
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
@@ -84,7 +84,7 @@ function createTemplate(state, destinations, allOffers, formType) {
               ${isDisabled ? 'disabled' : ''}
             >
             <datalist id="destination-list-${id}">
-              ${destinations.map((dest) => `<option value="${dest.id}">${dest.name}</option>`).join('')};
+              ${destinations.map((dest) => `<option value="${dest.name}"></option>`).join('')};
             </datalist>
           </div>
 
@@ -306,7 +306,7 @@ export default class EditPointView extends AbstractStatefulView {
   #priceChangeHandler = (evt) => this._setState({ basePrice: Number(evt.target.value) });
 
   #destinationChangeHandler = (evt) => {
-    const selectedDestination = getDestinationById(evt.target.value, this.#destinations);
+    const selectedDestination = getDestinationByName(evt.target.value, this.#destinations);
     this.updateElement({ destination: selectedDestination ? selectedDestination.id : null });
   };
 

@@ -36,6 +36,7 @@ export const sortByPrice = (a, b) => b.basePrice - a.basePrice;
 export const getOffersByType = (type, offersList) => offersList.find((offer) => offer.type === type)?.offers;
 export const getOfferById = (id, offersList) => offersList.find((offer) => offer.id === id);
 export const getDestinationById = (id, destinations) => destinations.find((destination) => destination.id === id);
+export const getDestinationByName = (name, destinations) => destinations.find((destination) => destination.name === name);
 
 export const getPointsDataRange = (points) => {
   if (!points.length) {
