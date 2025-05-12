@@ -5,7 +5,7 @@ import EmptyPointsListMessageView from '../view/empty-points-list-message-view.j
 import PointPresenter from './point-presenter.js';
 import { render, remove, RenderPosition } from '../framework/render.js';
 import { SortType, ActionType, UpdateType, FilterType, TimeLimit } from '../consts.js';
-import { sortByDay, sortByTime, sortByPrice } from '../utils/point.js';
+import { pointsSorters } from '../utils/sort.js';
 import { pointsFilters } from '../utils/filter.js';
 import NewPointPresenter from './new-point-presenter.js';
 import UiBlocker from '../framework/ui-blocker/ui-blocker.js';
@@ -49,19 +49,6 @@ export default class PointsListPresenter {
     this.#renderList();
   }
 
-  #sortPoints(points) {
-    switch (this.#sortModel.currentSortType) {
-      case SortType.PRICE:
-        points.sort(sortByPrice);
-        break;
-      case SortType.TIME:
-        points.sort(sortByTime);
-        break;
-      default:
-        points.sort(sortByDay);
-    }
-  }
-
   #renderList() {
     if (this.#isLoading) {
       this.#renderLoading();
@@ -71,7 +58,7 @@ export default class PointsListPresenter {
     render(this.#component, this.#containerElement);
     const filteredPoints = pointsFilters[this.#filterModel.currentFilterType](this.#pointsListModel.points);
     if (filteredPoints.length) {
-      this.#sortPoints(filteredPoints);
+      pointsSorters[this.#sortModel.currentSortType](filteredPoints);
       filteredPoints.forEach((point) => this.#renderPoint(point));
     } else {
       this.#renderEmptyList();
