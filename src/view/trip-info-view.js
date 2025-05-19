@@ -1,9 +1,8 @@
 import { CITIES_LENGTH_BORDER } from '../consts.js';
 import AbstractView from '../framework/view/abstract-view.js';
-import { getPointsDataRange, getTripPrice, getTripRoute } from '../utils/point.js';
 
-function createTemplate(dateRange, cities, totalPrice) {
-  const route = cities.length > CITIES_LENGTH_BORDER ? `${cities[0]} &mdash; ... &mdash; ${cities.at(-1)}` : cities.join(' &mdash; ');
+function createTemplate(dateRange, routeCities, totalPrice) {
+  const route = routeCities.length > CITIES_LENGTH_BORDER ? `${routeCities[0]} &mdash; ... &mdash; ${routeCities.at(-1)}` : routeCities.join(' &mdash; ');
 
   return `
     <section class="trip-main__trip-info  trip-info">
@@ -21,22 +20,18 @@ function createTemplate(dateRange, cities, totalPrice) {
 }
 
 export default class TripInfoView extends AbstractView {
-  #points;
-  #destinations;
-  #offers;
+  #dateRange;
+  #routeCities;
+  #totalPrice;
 
-  constructor(points, destinations, offers) {
+  constructor(dateRange, routeCities, totalPrice) {
     super();
-    this.#points = points;
-    this.#destinations = destinations;
-    this.#offers = offers;
+    this.#dateRange = dateRange;
+    this.#routeCities = routeCities;
+    this.#totalPrice = totalPrice;
   }
 
   get template() {
-    const dateRange = getPointsDataRange(this.#points);
-    const route = getTripRoute(this.#points, this.#destinations);
-    const price = getTripPrice(this.#points, this.#offers);
-
-    return createTemplate(dateRange, route, price);
+    return createTemplate(this.#dateRange, this.#routeCities, this.#totalPrice);
   }
 }
